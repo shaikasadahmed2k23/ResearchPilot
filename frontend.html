@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResearchPilot — AI Research Hypothesis Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0a0a0f;
+            --surface: #12121a;
+            --surface2: #1a1a26;
+            --border: #2a2a3a;
+            --accent: #7c3aed;
+            --accent2: #06b6d4;
+            --green: #10b981;
+            --amber: #f59e0b;
+            --red: #ef4444;
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            min-height: 100vh;
+        }
+
+        /* HEADER */
+        header {
+            border-bottom: 1px solid var(--border);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--surface);
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        .badge {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 20px;
+            background: var(--accent);
+            color: white;
+            font-weight: 600;
+        }
+
+        .amd-badge {
+            margin-left: auto;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            border: 1px solid var(--accent2);
+            color: var(--accent2);
+        }
+
+        /* MAIN LAYOUT */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        /* HERO */
+        .hero {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: var(--muted);
+            font-size: 16px;
+            max-width: 540px;
+            margin: 0 auto 32px;
+        }
+
+        /* AGENT PIPELINE VISUAL */
+        .pipeline {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            margin-bottom: 48px;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .pipe-agent {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 14px;
+            text-align: center;
+            font-size: 12px;
+            min-width: 120px;
+        }
+
+        .pipe-agent .icon {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .pipe-agent .name {
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .pipe-agent .desc {
+            color: var(--muted);
+            font-size: 10px;
+            margin-top: 2px;
+        }
+
+        .pipe-arrow {
+            color: var(--accent);
+            font-size: 18px;
+            padding: 0 4px;
+        }
+
+        /* INPUT FORM */
+        .input-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+        }
+
+        .input-card h2 {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--accent);
+        }
+
+        .btn {
+            padding: 13px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent), #9333ea);
+            color: white;
+            width: 100%;
+            justify-content: center;
+            font-size: 16px;
+            padding: 16px;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* PROGRESS */
+        .progress-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 32px;
+            display: none;
+        }
+
+        .progress-card h3 {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: var(--muted);
+        }
+
+        .agent-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .step.active {
+            border-color: var(--accent);
+            background: rgba(124, 58, 237, 0.08);
+        }
+
+        .step.done {
+            border-color: var(--green);
+            background: rgba(16, 185, 129, 0.06);
+        }
+
+        .step-icon {
+            font-size: 20px;
+            width: 28px;
+            text-align: center;
+        }
+
+        .step-info {
+            flex: 1;
+        }
+
+        .step-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .step-desc {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        .step-status {
+            font-size: 12px;
+        }
+
+        .status-waiting {
+            color: var(--muted);
+        }
+
+        .status-running {
+            color: var(--accent);
+        }
+
+        .status-done {
+            color: var(--green);
+        }
+
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* RESULTS */
+        .results-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+            display: none;
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 24px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .results-header h2 {
+            font-size: 20px;
+        }
+
+        .success-badge {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--green);
+            border: 1px solid var(--green);
+            border-radius: 20px;
+            padding: 3px 12px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid var(--border);
+            background: var(--surface2);
+            color: var(--muted);
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* SECTION CARDS */
+        .section-card {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .section-card h3 {
+            font-size: 14px;
+            color: var(--accent2);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 14px;
+            font-weight: 600;
+        }
+
+        .chip-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .chip {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            background: rgba(124, 58, 237, 0.12);
+            border: 1px solid rgba(124, 58, 237, 0.3);
+            color: #c4b5fd;
+        }
+
+        .chip.green {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: #6ee7b7;
+        }
+
+        .chip.amber {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: rgba(245, 158, 11, 0.3);
+            color: #fcd34d;
+        }
+
+        .chip.blue {
+            background: rgba(6, 182, 212, 0.1);
+            border-color: rgba(6, 182, 212, 0.3);
+            color: #67e8f9;
+        }
+
+        /* HYPOTHESIS CARDS */
+        .hyp-card {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 14px;
+            background: var(--surface);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hyp-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: var(--accent);
+        }
+
+        .hyp-num {
+            font-size: 11px;
+            color: var(--accent);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
+        }
+
+        .hyp-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .hyp-text {
+            font-size: 14px;
+            color: var(--muted);
+            line-height: 1.65;
+            margin-bottom: 14px;
+        }
+
+        .hyp-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .meta-tag {
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            color: var(--muted);
+        }
+
+        /* DATASET CARDS */
+        .dataset-card {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 10px;
+            background: var(--surface);
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+        }
+
+        .dataset-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: rgba(6, 182, 212, 0.15);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .dataset-info {
+            flex: 1;
+        }
+
+        .dataset-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .dataset-desc {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .dataset-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .dataset-link {
+            font-size: 12px;
+            color: var(--accent2);
+            text-decoration: none;
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            padding: 3px 10px;
+            border-radius: 6px;
+        }
+
+        .dataset-link:hover {
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        /* IMPACT SCORES */
+        .scores-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .score-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .score-label {
+            font-size: 12px;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .score-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--green);
+        }
+
+        .score-max {
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        /* PHASE TIMELINE */
+        .phase-item {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .phase-num {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--accent);
+            color: white;
+            font-weight: 700;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .phase-body {
+            flex: 1;
+            padding-top: 4px;
+        }
+
+        .phase-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .phase-desc {
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+
+        .phase-footer {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .duration-tag {
+            font-size: 11px;
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--amber);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        /* COLLAB */
+        .lab-card {
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 10px;
+            background: var(--surface);
+        }
+
+        .lab-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .lab-inst {
+            font-size: 13px;
+            color: var(--accent2);
+            margin-bottom: 6px;
+        }
+
+        .lab-rel {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .funding-card {
+            border: 1px solid rgba(245, 158, 11, 0.25);
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 10px;
+            background: rgba(245, 158, 11, 0.04);
+        }
+
+        .funding-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .funding-amount {
+            font-size: 15px;
+            color: var(--amber);
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .funding-detail {
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        .summary-box {
+            background: rgba(124, 58, 237, 0.08);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            border-radius: 10px;
+            padding: 16px;
+            font-size: 14px;
+            line-height: 1.7;
+            color: var(--text);
+            font-style: italic;
+        }
+
+        /* ERROR */
+        .error-card {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            color: var(--red);
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">Research<span>Pilot</span></div>
+        <div class="badge">6 AI Agents</div>
+        <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+            <div class="amd-badge" style="margin-left:0">⚡ AMD Instinct MI300X</div>
+            <div class="amd-badge" style="margin-left:0;border-color:#f59e0b;color:#f59e0b">🔥 ROCm + LLaMA 3.3 70B
+            </div>
+            <div class="amd-badge" style="margin-left:0;border-color:#10b981;color:#10b981">☁️ AMD Developer Cloud</div>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- HERO -->
+        <div class="hero">
+            <h1>AI-Powered <span>Research Hypothesis</span> Generator</h1>
+            <p>Enter any research topic. 6 specialized AI agents analyze literature, generate hypotheses, find datasets,
+                design methodology, predict impact, and find collaborators — automatically.</p>
+        </div>
+
+        <!-- PIPELINE VISUAL -->
+        <div class="pipeline">
+            <div class="pipe-agent">
+                <div class="icon">🔍</div>
+                <div class="name">Literature</div>
+                <div class="desc">ArXiv papers</div>
+            </div>
+            <div class="pipe-arrow">→</div>
+            <div class="pipe-agent">
+                <div class="icon">💡</div>
+                <div class="name">Hypotheses</div>
+                <div class="desc">Novel ideas</div>
+            </div>
+            <div class="pipe-arrow">→</div>
+            <div class="pipe-agent">
+                <div class="icon">📦</div>
+                <div class="name">Datasets</div>
+                <div class="desc">Real data</div>
+            </div>
+            <div class="pipe-arrow">→</div>
+            <div class="pipe-agent">
+                <div class="icon">🔬</div>
+                <div class="name">Methodology</div>
+                <div class="desc">Research plan</div>
+            </div>
+            <div class="pipe-arrow">→</div>
+            <div class="pipe-agent">
+                <div class="icon">📈</div>
+                <div class="name">Impact</div>
+                <div class="desc">Scores + market</div>
+            </div>
+            <div class="pipe-arrow">→</div>
+            <div class="pipe-agent">
+                <div class="icon">🤝</div>
+                <div class="name">Collaborate</div>
+                <div class="desc">Labs + grants</div>
+            </div>
+        </div>
+
+        <!-- INPUT -->
+        <div class="input-card">
+            <h2>🚀 Start Your Research</h2>
+            <div class="form-row">
+                <div class="form-group" style="flex:2">
+                    <label>Research Topic</label>
+                    <input type="text" id="topicInput"
+                        placeholder="e.g. transformer models in NLP, wildfire detection using deep learning..." />
+                </div>
+                <div class="form-group">
+                    <label>Domain</label>
+                    <select id="domainInput">
+                        <option value="AI">Artificial Intelligence</option>
+                        <option value="healthcare">Healthcare</option>
+                        <option value="climate">Climate Science</option>
+                        <option value="education">Education</option>
+                        <option value="finance">Finance</option>
+                        <option value="general">General</option>
+                    </select>
+                </div>
+            </div>
+            <button class="btn btn-primary" id="generateBtn" onclick="startPipeline()">
+                ⚡ Generate Research Package
+            </button>
+        </div>
+
+        <!-- PROGRESS -->
+        <div class="progress-card" id="progressCard">
+            <h3>🔄 Pipeline running on AMD Instinct MI300X...</h3>
+            <div class="agent-steps" id="agentSteps">
+                <div class="step" id="step1">
+                    <div class="step-icon">🔍</div>
+                    <div class="step-info">
+                        <div class="step-name">Literature Analyzer</div>
+                        <div class="step-desc">Searching ArXiv + analyzing with LLaMA 3.3 70B</div>
+                    </div>
+                    <div class="step-status status-waiting" id="s1">Waiting...</div>
+                </div>
+                <div class="step" id="step2">
+                    <div class="step-icon">💡</div>
+                    <div class="step-info">
+                        <div class="step-name">Hypothesis Generator</div>
+                        <div class="step-desc">Generating novel research hypotheses</div>
+                    </div>
+                    <div class="step-status status-waiting" id="s2">Waiting...</div>
+                </div>
+                <div class="step" id="step3">
+                    <div class="step-icon">📦</div>
+                    <div class="step-info">
+                        <div class="step-name">Dataset Finder</div>
+                        <div class="step-desc">Finding real datasets from HuggingFace, Kaggle, UCI</div>
+                    </div>
+                    <div class="step-status status-waiting" id="s3">Waiting...</div>
+                </div>
+                <div class="step" id="step4">
+                    <div class="step-icon">🔬</div>
+                    <div class="step-info">
+                        <div class="step-name">Methodology Designer</div>
+                        <div class="step-desc">Designing research phases and evaluation plan</div>
+                    </div>
+                    <div class="step-status status-waiting" id="s4">Waiting...</div>
+                </div>
+                <div class="step" id="step5">
+                    <div class="step-icon">📈</div>
+                    <div class="step-info">
+                        <div class="step-name">Impact Predictor</div>
+                        <div class="step-desc">Scoring scientific, social, commercial impact</div>
+                    </div>
+                    <div class="step-status status-waiting" id="s5">Waiting...</div>
+                </div>
+                <div class="step" id="step6">
+                    <div class="step-icon">🤝</div>
+                    <div class="step-info">
+                        <div class="step-name">Collaboration Finder</div>
+                        <div class="step-desc">Finding labs, grants, and conferences</div>
+                    </div>
+                    <div class="step-status status-waiting" id="s6">Waiting...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ERROR -->
+        <div class="error-card" id="errorCard">
+            ❌ <strong>Error:</strong> <span id="errorMsg"></span>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="results-card" id="resultsCard">
+            <div class="results-header">
+                <h2>📋 Research Package</h2>
+                <div class="success-badge">✅ 6 Agents Complete</div>
+            </div>
+
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('literature')">🔍 Literature</div>
+                <div class="tab" onclick="switchTab('hypotheses')">💡 Hypotheses</div>
+                <div class="tab" onclick="switchTab('datasets')">📦 Datasets</div>
+                <div class="tab" onclick="switchTab('methodology')">🔬 Methodology</div>
+                <div class="tab" onclick="switchTab('impact')">📈 Impact</div>
+                <div class="tab" onclick="switchTab('collaboration')">🤝 Collaborate</div>
+            </div>
+
+            <!-- TAB: LITERATURE -->
+            <div class="tab-content active" id="tab-literature">
+                <div class="section-card">
+                    <h3>Summary</h3>
+                    <p id="lit-summary" style="font-size:14px;line-height:1.7;color:var(--muted)"></p>
+                </div>
+                <div class="section-card">
+                    <h3>Dominant Themes</h3>
+                    <div class="chip-list" id="lit-themes"></div>
+                </div>
+                <div class="section-card">
+                    <h3>Research Gaps</h3>
+                    <div class="chip-list" id="lit-gaps"></div>
+                </div>
+                <div class="section-card">
+                    <h3>Recent Trends</h3>
+                    <div class="chip-list" id="lit-trends"></div>
+                </div>
+            </div>
+
+            <!-- TAB: HYPOTHESES -->
+            <div class="tab-content" id="tab-hypotheses">
+                <div id="hyp-list"></div>
+                <div class="section-card" style="margin-top:16px">
+                    <h3>⭐ Recommendation</h3>
+                    <p id="hyp-rec" style="font-size:14px;line-height:1.7;color:var(--muted)"></p>
+                </div>
+            </div>
+
+            <!-- TAB: DATASETS -->
+            <div class="tab-content" id="tab-datasets">
+                <div id="dataset-list"></div>
+                <div class="section-card" style="margin-top:16px">
+                    <h3>Primary Recommendation</h3>
+                    <p id="dataset-rec" style="font-size:14px;line-height:1.7;color:var(--muted)"></p>
+                </div>
+            </div>
+
+            <!-- TAB: METHODOLOGY -->
+            <div class="tab-content" id="tab-methodology">
+                <div class="section-card">
+                    <h3>Approach & Duration</h3>
+                    <div style="display:flex;gap:12px;flex-wrap:wrap">
+                        <div class="chip blue" id="meth-approach"></div>
+                        <div class="chip amber" id="meth-duration"></div>
+                    </div>
+                </div>
+                <div class="section-card">
+                    <h3>Research Phases</h3>
+                    <div id="phase-list"></div>
+                </div>
+                <div class="section-card">
+                    <h3>Evaluation Metrics</h3>
+                    <div class="chip-list" id="meth-metrics"></div>
+                </div>
+            </div>
+
+            <!-- TAB: IMPACT -->
+            <div class="tab-content" id="tab-impact">
+                <div class="scores-grid" id="impact-scores" style="margin-bottom:16px"></div>
+                <div class="section-card">
+                    <h3>Summary</h3>
+                    <div class="summary-box" id="impact-summary"></div>
+                </div>
+                <div class="section-card">
+                    <h3>Real World Applications</h3>
+                    <div id="impact-apps"></div>
+                </div>
+                <div class="section-card">
+                    <h3>💰 Commercialization Potential</h3>
+                    <div id="impact-commercial"></div>
+                </div>
+                <div class="section-card">
+                    <h3>📰 Publication Venues</h3>
+                    <div class="chip-list" id="impact-venues"></div>
+                </div>
+            </div>
+
+            <!-- TAB: COLLABORATION -->
+            <div class="tab-content" id="tab-collaboration">
+                <div class="section-card">
+                    <h3>🏛 Research Labs</h3>
+                    <div id="collab-labs"></div>
+                </div>
+                <div class="section-card">
+                    <h3>💰 Funding Opportunities</h3>
+                    <div id="collab-funding"></div>
+                </div>
+                <div class="section-card">
+                    <h3>🎯 Conferences to Target</h3>
+                    <div class="chip-list" id="collab-conferences"></div>
+                </div>
+                <div class="section-card">
+                    <h3>📋 Action Plan</h3>
+                    <div class="summary-box" id="collab-action"></div>
+                </div>
+            </div>
+
+        </div><!-- end results-card -->
+    </div><!-- end container -->
+
+    <script>
+        const API = window.location.hostname === '127.0.0.1'
+            ? 'http://127.0.0.1:8000'
+            : window.location.origin;
+
+        let currentTab = 'literature';
+
+        function switchTab(name) {
+            document.querySelectorAll('.tab').forEach((t, i) => {
+                const tabs = ['literature', 'hypotheses', 'datasets', 'methodology', 'impact', 'collaboration'];
+                t.classList.toggle('active', tabs[i] === name);
+            });
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById('tab-' + name).classList.add('active');
+        }
+
+        function setStep(n, state) {
+            const step = document.getElementById('step' + n);
+            const status = document.getElementById('s' + n);
+            step.className = 'step ' + (state === 'done' ? 'done' : state === 'running' ? 'active' : '');
+            if (state === 'running') {
+                status.innerHTML = '<div class="spinner"></div>';
+                status.className = 'step-status status-running';
+            } else if (state === 'done') {
+                status.innerHTML = '✅ Done';
+                status.className = 'step-status status-done';
+            } else {
+                status.innerHTML = 'Waiting...';
+                status.className = 'step-status status-waiting';
+            }
+        }
+
+        async function startPipeline() {
+            const topic = document.getElementById('topicInput').value.trim();
+            const domain = document.getElementById('domainInput').value;
+            if (!topic) { alert('Please enter a research topic!'); return; }
+
+            // Reset UI
+            document.getElementById('generateBtn').disabled = true;
+            document.getElementById('generateBtn').textContent = '⏳ Running pipeline...';
+            document.getElementById('resultsCard').style.display = 'none';
+            document.getElementById('errorCard').style.display = 'none';
+            document.getElementById('progressCard').style.display = 'block';
+            for (let i = 1; i <= 6; i++) setStep(i, 'waiting');
+
+            // Animate steps (since backend is synchronous)
+            const delays = [0, 8000, 13000, 18000, 23000, 28000];
+            delays.forEach((d, i) => {
+                setTimeout(() => setStep(i + 1, 'running'), d);
+                if (i > 0) setTimeout(() => setStep(i, 'done'), d);
+            });
+
+            try {
+                const res = await fetch(`${API}/research/generate`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ topic, domain })
+                });
+
+                if (!res.ok) throw new Error(`Server error: ${res.status}`);
+                const data = await res.json();
+
+                // Mark all done
+                for (let i = 1; i <= 6; i++) setStep(i, 'done');
+
+                setTimeout(() => {
+                    document.getElementById('progressCard').style.display = 'none';
+                    renderResults(data.results);
+                    document.getElementById('resultsCard').style.display = 'block';
+                }, 500);
+
+            } catch (err) {
+                for (let i = 1; i <= 6; i++) setStep(i, 'waiting');
+                document.getElementById('progressCard').style.display = 'none';
+                document.getElementById('errorCard').style.display = 'block';
+                document.getElementById('errorMsg').textContent = err.message;
+            } finally {
+                document.getElementById('generateBtn').disabled = false;
+                document.getElementById('generateBtn').textContent = '⚡ Generate Research Package';
+            }
+        }
+
+        function renderResults(r) {
+            const lit = r.agent_1_literature.analysis;
+            document.getElementById('lit-summary').textContent = lit.summary || '';
+            document.getElementById('lit-themes').innerHTML = (lit.dominant_themes || []).map(t => `<span class="chip">${t}</span>`).join('');
+            document.getElementById('lit-gaps').innerHTML = (lit.research_gaps || []).map(t => `<span class="chip green">${t}</span>`).join('');
+            document.getElementById('lit-trends').innerHTML = (lit.recent_trends || []).map(t => `<span class="chip blue">${t}</span>`).join('');
+
+            const hyps = r.agent_2_hypotheses.hypotheses || [];
+            document.getElementById('hyp-list').innerHTML = hyps.map(h => `
+    <div class="hyp-card">
+      <div class="hyp-num">Hypothesis ${h.id}</div>
+      <div class="hyp-title">${h.title}</div>
+      <div class="hyp-text">${h.hypothesis}</div>
+      <div class="hyp-text" style="color:var(--text);font-style:italic">💡 <strong>Novelty:</strong> ${h.novelty}</div>
+      <div class="hyp-meta">
+        <span class="meta-tag">⏱ ${h.estimated_timeline}</span>
+        <span class="meta-tag">🎯 ${h.difficulty_level}</span>
+        <span class="meta-tag">📌 ${h.addresses_gap}</span>
+      </div>
+    </div>`).join('');
+            document.getElementById('hyp-rec').textContent = r.agent_2_hypotheses.recommendation || '';
+
+            const datasets = r.agent_3_datasets.datasets || [];
+            document.getElementById('dataset-list').innerHTML = datasets.map(d => `
+    <div class="dataset-card">
+      <div class="dataset-icon">📊</div>
+      <div class="dataset-info">
+        <div class="dataset-name">${d.name}</div>
+        <div class="dataset-desc">${d.description}</div>
+        <div class="dataset-meta">
+          <span class="meta-tag">📁 ${d.format}</span>
+          <span class="meta-tag">💾 ${d.size}</span>
+          <span class="meta-tag">🏷 ${d.source}</span>
+          <a class="dataset-link" href="${d.url}" target="_blank">View Dataset →</a>
+        </div>
+      </div>
+    </div>`).join('');
+            document.getElementById('dataset-rec').textContent = r.agent_3_datasets.primary_recommendation || '';
+
+            const meth = r.agent_4_methodology.methodology || {};
+            document.getElementById('meth-approach').textContent = '📐 ' + (meth.approach || '');
+            document.getElementById('meth-duration').textContent = '⏱ ' + (meth.total_estimated_duration || '');
+            document.getElementById('phase-list').innerHTML = (meth.phases || []).map(p => `
+    <div class="phase-item">
+      <div class="phase-num">${p.phase_number}</div>
+      <div class="phase-body">
+        <div class="phase-name">${p.phase_name}</div>
+        <div class="phase-desc">${p.description}</div>
+        <div class="phase-footer">
+          <span class="duration-tag">⏱ ${p.duration}</span>
+          ${(p.tools || []).map(t => `<span class="chip blue" style="font-size:11px;padding:2px 8px">${t}</span>`).join('')}
+        </div>
+      </div>
+    </div>`).join('');
+            document.getElementById('meth-metrics').innerHTML = (meth.evaluation_metrics || []).map(m => `<span class="chip amber">${m}</span>`).join('');
+
+            const imp = r.agent_5_impact;
+            const scores = imp.impact_scores || {};
+            document.getElementById('impact-scores').innerHTML = [
+                ['Scientific', scores.scientific_impact],
+                ['Social', scores.social_impact],
+                ['Commercial', scores.commercial_impact],
+                ['Overall', scores.overall_impact]
+            ].map(([l, v]) => `<div class="score-item"><div class="score-label">${l} Impact</div><div class="score-value">${v}<span class="score-max">/10</span></div></div>`).join('');
+            document.getElementById('impact-summary').textContent = imp.summary || '';
+            document.getElementById('impact-apps').innerHTML = (imp.real_world_applications || []).map(a => `
+    <div class="section-card" style="margin-bottom:10px">
+      <div style="font-weight:600;margin-bottom:4px">${a.application} <span style="color:var(--accent2);font-size:12px">${a.sector}</span></div>
+      <div style="font-size:13px;color:var(--muted)">${a.description}</div>
+    </div>`).join('');
+            const comm = imp.commercialization_potential || {};
+            document.getElementById('impact-commercial').innerHTML = `
+    <div style="font-size:14px;margin-bottom:8px"><strong>💡 Startup Idea:</strong> ${comm.startup_idea || ''}</div>
+    <div style="font-size:14px;margin-bottom:8px;color:var(--green)"><strong>💰 Market Size:</strong> ${comm.estimated_market_size || ''}</div>
+    <div style="font-size:13px;color:var(--muted)">${comm.target_market || ''}</div>`;
+            document.getElementById('impact-venues').innerHTML = (imp.publication_potential?.recommended_venues || []).map(v => `<span class="chip">${v}</span>`).join('');
+
+            const collab = r.agent_6_collaboration;
+            document.getElementById('collab-labs').innerHTML = (collab.research_labs || []).map(l => `
+    <div class="lab-card">
+      <div class="lab-name">${l.name}</div>
+      <div class="lab-inst">${l.institution} · ${l.country}</div>
+      <div class="lab-rel">${l.relevance}</div>
+    </div>`).join('');
+            document.getElementById('collab-funding').innerHTML = (collab.funding_opportunities || []).map(f => `
+    <div class="funding-card">
+      <div class="funding-name">${f.name}</div>
+      <div class="funding-amount">${f.amount}</div>
+      <div class="funding-detail">${f.eligibility} · ${f.deadline_notes}</div>
+    </div>`).join('');
+            document.getElementById('collab-conferences').innerHTML = (collab.conferences_to_target || []).map(c => `<span class="chip">${c.acronym} — ${c.focus}</span>`).join('');
+            document.getElementById('collab-action').textContent = collab.action_plan || '';
+        }
+
+        // Enter key support
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('topicInput').addEventListener('keydown', e => {
+                if (e.key === 'Enter') startPipeline();
+            });
+        });
+    </script>
+</body>
+
+</html>
