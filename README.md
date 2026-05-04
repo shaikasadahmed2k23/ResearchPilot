@@ -224,7 +224,7 @@ letting researchers focus on what matters: **the science.**
 <div align="center">
 
 **Shaik Asad Ahmed**
-Final Year B.Tech CSE (AI) • GPCET, Kurnool, India
+Final Year B.Tech CSE (AI) • Kurnool, India
 
 [![GitHub](https://img.shields.io/badge/GitHub-shaikasadahmed2k23-181717?style=flat&logo=github)](https://github.com/shaikasadahmed2k23)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Shaik%20Asad%20Ahmed-0077B5?style=flat&logo=linkedin)](https://www.linkedin.com/in/shaik-asad-ahmed-224b9b2a8/)
