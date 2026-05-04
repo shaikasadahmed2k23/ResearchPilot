@@ -89,6 +89,8 @@ No more spending weeks on literature reviews. No more staring at a blank page wo
 ---
 
 ## ⚙️ AMD Tech Stack
+
+```text
 ┌─────────────────────────────────────────────┐
 │           AMD Instinct MI300X               │
 │              192GB HBM3                     │
@@ -103,6 +105,7 @@ No more spending weeks on literature reviews. No more staring at a blank page wo
 ├─────────────────────────────────────────────┤
 │      Hugging Face Spaces (Docker)           │
 └─────────────────────────────────────────────┘
+```
 
 | Component | Technology |
 |-----------|------------|
@@ -174,6 +177,8 @@ Get your free Groq API key at **[console.groq.com](https://console.groq.com)**
 ---
 
 ## 📁 Project Structure
+
+```text
 ResearchPilot/
 ├── main.py                    # FastAPI app entry point
 ├── frontend.html              # Complete UI (single file)
@@ -196,6 +201,7 @@ ResearchPilot/
 │   └── api/
 │       └── research.py        # API routes
 └── Screenshots/
+```
 
 ---
 
