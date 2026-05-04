@@ -1,6 +1,6 @@
 from groq import Groq
 from src.config import config
-from src.tools.arxiv_tool import search_arxiv_papers
+from src.tools.arxiv_tool import search_arxiv_smart
 from typing import Dict
 import json
 
@@ -16,7 +16,7 @@ def run_literature_analyzer(topic: str, domain: str = "general") -> Dict:
 
     # Step 1 — Fetch papers from ArXiv
     print(f"   Searching ArXiv...")
-    papers = search_arxiv_papers(topic)
+    papers = search_arxiv_smart(topic)
     print(f"   Found {len(papers)} papers")
 
     if not papers:

@@ -45,7 +45,13 @@ COMMON METHODOLOGIES:
 NUMBER OF PAPERS ANALYZED: {len(papers)}
 
 Based on this analysis, generate 3 original, novel, and testable research hypotheses.
+STRICT RULES for diversity — each hypothesis MUST target a completely different angle:
+- Hypothesis 1: TECHNICAL angle — focus on model architecture, algorithm, or method improvement
+- Hypothesis 2: APPLICATION angle — focus on a real-world use case or deployment scenario  
+- Hypothesis 3: INTERDISCIPLINARY angle — combine this field with another domain (healthcare, climate, education, etc.)
+
 Each hypothesis must directly address one of the research gaps and align with emerging trends.
+No two hypotheses should overlap in approach or contribution.
 
 Return ONLY a JSON object with this exact structure:
 {{
