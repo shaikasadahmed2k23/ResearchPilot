@@ -58,33 +58,38 @@ No more spending weeks on literature reviews. No more staring at a blank page wo
 
 ## 📸 Screenshots
 
-### 📚 Literature Analysis
-<img src="Screenshots/literature.png" alt="Literature Analysis" width="900"/>
-
-<br/>
-
-### 💡 Hypothesis Generation
-<img src="Screenshots/hypotheses.png" alt="Hypothesis Generation" width="900"/>
-
-<br/>
-
-### 📦 Dataset Recommendations
-<img src="Screenshots/datasets.png" alt="Dataset Recommendations" width="900"/>
-
-<br/>
-
-### 🔬 Research Methodology
-<img src="Screenshots/methodology.png" alt="Research Methodology" width="900"/>
-
-<br/>
-
-### 📈 Impact Prediction
-<img src="Screenshots/impact.png" alt="Impact Prediction" width="900"/>
-
-<br/>
-
-### 🤝 Collaboration Opportunities
-<img src="Screenshots/collaboration.png" alt="Collaboration" width="900"/>
+<table>
+  <tr>
+    <td align="center">
+      <b>📚 Literature Analysis</b><br/>
+      <img src="Screenshots/literature.png" alt="Literature Analysis" width="100%"/>
+    </td>
+    <td align="center">
+      <b>💡 Hypothesis Generation</b><br/>
+      <img src="Screenshots/hypotheses.png" alt="Hypothesis Generation" width="100%"/>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <b>📦 Dataset Recommendations</b><br/>
+      <img src="Screenshots/datasets.png" alt="Dataset Recommendations" width="100%"/>
+    </td>
+    <td align="center">
+      <b>🔬 Research Methodology</b><br/>
+      <img src="Screenshots/methodology.png" alt="Research Methodology" width="100%"/>
+    </td>
+  </tr>
+  <tr>
+    <td align="center">
+      <b>📈 Impact Prediction</b><br/>
+      <img src="Screenshots/impact.png" alt="Impact Prediction" width="100%"/>
+    </td>
+    <td align="center">
+      <b>🤝 Collaboration Opportunities</b><br/>
+      <img src="Screenshots/collaboration.png" alt="Collaboration" width="100%"/>
+    </td>
+  </tr>
+</table>
 
 ---
 
